@@ -1,20 +1,25 @@
 package com.ss.lms.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="tbl_author", schema="library")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer authorId;
 
+    @Column
     private  String authorName;
     
+    
+    public Author() { }
 
-    public Author(){};
     public Author(Integer auth, String authName){
     	authorId = auth;
     	authorName = authName;

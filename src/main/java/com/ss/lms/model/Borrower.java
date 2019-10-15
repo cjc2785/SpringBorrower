@@ -1,52 +1,64 @@
 package com.ss.lms.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="tbl_borrower", schema="library")
 public class Borrower {
 	
-	private int borrowerCardNumber;
-	private String borrowerName;
-	private String borrowerAddress;
-	private String borrowerPhoneNumber;
+	@Column
+	private int cardNo;
+	
+	@Column
+	private String name;
+	
+	@Column
+	private String address;
+	
+	@Column
+	private String phone;
 	
 	public Borrower() {};
 	
 	public Borrower(int cardNumber, String name, String address, String phoneNumber) {
-		borrowerCardNumber = cardNumber;
-		borrowerName = name;
-		borrowerAddress = address;
-		borrowerPhoneNumber = phoneNumber;
+		this.cardNo = cardNumber;
+		this.name = name;
+		this.address = address;
+		this.phone = phoneNumber;
 		
 	}
 
-	public int getBorrowerCardNumber() {
-		return borrowerCardNumber;
+	public int getCardNo() {
+		return cardNo;
 	}
 
-	public void setBorrowerCardNumber(int borrowerCardNumber) {
-		this.borrowerCardNumber = borrowerCardNumber;
+	public void setCardNo(int cardNo) {
+		this.cardNo = cardNo;
 	}
 
-	public String getBorrowerName() {
-		return borrowerName;
+	public String getName() {
+		return name;
 	}
 
-	public void setBorrowerName(String borrowerName) {
-		this.borrowerName = borrowerName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getBorrowerAddress() {
-		return borrowerAddress;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setBorrowerAddress(String borrowerAddress) {
-		this.borrowerAddress = borrowerAddress;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
-	public String getBorrowerPhoneNumber() {
-		return borrowerPhoneNumber;
+	public String getPhone() {
+		return phone;
 	}
 
-	public void setBorrowerPhoneNumber(String borrowerPhoneNumber) {
-		this.borrowerPhoneNumber = borrowerPhoneNumber;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
-	
 }

@@ -1,11 +1,30 @@
 package com.ss.lms.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+@Entity
 public class Book {
 	
+	@Id
+	@Column
 	private int bookId;
+	
+	@Column
 	private String title;
+	
+	@OneToOne
+	@JoinColumn(name="authId", referencedColumnName="authorId")
 	private Author author;
+	
+	@OneToOne
+	@JoinColumn(name="publisherId")
 	private Publisher publisher;
+	
+	public Book() { }
 	
 	public Book(int bookId, String title, Author author, Publisher publisher) {
 		this.bookId = bookId;

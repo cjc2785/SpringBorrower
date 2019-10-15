@@ -4,11 +4,8 @@ import com.ss.lms.services.*;
 import com.ss.lms.exceptions.*;
 import com.ss.lms.model.*;
 
-import java.sql.Date;
-import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,30 +18,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+
 @RestController
 @RequestMapping("/lms/borrower/")
 public class BorrowerController {
-	
 	
     @Autowired
     private BookLoanService loanService;
     
     @Autowired
-    private BorrowerService borrowerService;
-    
-    @Autowired
-    private BookService bookService;
-    
-    @Autowired
     private LibraryBranchService branchService;
+    
+    @Autowired
+    private BookCopiesService copiesService;
+    
     
     //Get all branches
     @GetMapping("branches")
     public List<LibraryBranch> getBranches() {
     	try {
-    	List<LibraryBranch> branches = branchService.getAll();
+    	List<LibraryBranch> branches = branchService.findAll();
     	return branches;
-    	} catch (SQLException e) {
+    	} catch (Exception e) {
     		throw new RuntimeException(e);
     	}
     }
@@ -53,41 +48,39 @@ public class BorrowerController {
     @GetMapping("branches/{branchId}/books")
     public List<Book> getBooks(@PathVariable("branchId") int branchId) {
     	try {
-    		Optional<LibraryBranch> optBranch = branchService.get(branchId);
+    	
+    		List<Book> books = copiesService.getAvailableByBranch(branchId)
+    				.stream()
+    				.map(BookCopies::getBook)
+    				.collect(Collectors.toList());
     		
-    		if(optBranch.isEmpty()) {
-    			
-    			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    		}
-    		
-    		LibraryBranch branch = optBranch.get();
-    		
-    		List<Book> books = bookService.getAll(branch);
     		return books;
-    	} catch (SQLException e) {
+    	} catch (EntityDoesNotExistException e) {
+    		throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
     		throw new RuntimeException(e);
-    	}
+    	} 
     }
     
     //Get branches where borrower has at least 1 book checked out
     @GetMapping("borrowers/{cardNo}/branches")
     public List<LibraryBranch> getBranches(@PathVariable("cardNo") int cardNo) {
     	try {
-    		Optional<Borrower> optBorrower = borrowerService.get(cardNo);
-    		
-    		if(optBorrower.isEmpty()) {
-    			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    		}
-    		
-    		Borrower borrower = optBorrower.get();
-    		
-    		List<LibraryBranch> branches = branchService.getAll(borrower);
+    	
+    		List<LibraryBranch> branches = loanService.getBranchesByCardNo(cardNo);
     		
     		return branches;
    
-    	} catch (SQLException e) {
+    	} catch (EntityDoesNotExistException e) {
+    		
+    		String entity = e.getEntity();
+    		throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, 
+					entity + " does not exist"
+					);
+		} catch (Exception e) {
     		throw new RuntimeException(e);
-    	}
+    	} 
     }
     
     
@@ -99,33 +92,20 @@ public class BorrowerController {
     		@PathVariable("branchId") int branchId) {
     	
     	try {
-    		Optional<Borrower> optBorrower = borrowerService.get(cardNo);
-    		
-    		if(optBorrower.isEmpty()) {
-    			throw new ResponseStatusException(
-    					HttpStatus.NOT_FOUND, 
-    					"borrower does not exist"
-    					);
-    		}
-    		
-    		Optional<LibraryBranch> optBranch = branchService.get(branchId);
-    		
-    		if(optBranch.isEmpty()) {
-    			throw new ResponseStatusException(
-    					HttpStatus.NOT_FOUND, 
-    					"branch does not exist"
-    					);
-    		}
-    		
-    		Borrower borrower = optBorrower.get();
-    		LibraryBranch branch = optBranch.get();
-    		
-    		List<Book> books = bookService.getAll(borrower, branch);
+  
+    		List<Book> books = loanService.getBooksByBranchAndCardNo(branchId, cardNo);
     		return books;
     		
-    	} catch (SQLException e) {
+    	} catch (EntityDoesNotExistException e) {
+    		
+    		String entity = e.getEntity();
+    		throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, 
+					entity + " does not exist"
+					);
+		}  catch (Exception e) {
     		throw new RuntimeException(e);
-    	}
+    	} 
     } 
     
     //Check out a book
@@ -138,20 +118,15 @@ public class BorrowerController {
     		@PathVariable("bookId") int bookId) {
     	
     	try {
-    	
-    		//Create the loan
-    		LocalDate outDate = LocalDate.now();
-    		LocalDate dueDate = outDate.plusWeeks(1);
+
+    		BookLoansId loanId = new BookLoansId();
     		
-    		BookLoans loan = new BookLoans(
-    				bookId, branchId, cardNo,
-    				Date.valueOf(outDate), 
-    				Date.valueOf(dueDate)
-    				);
+    		loanId.setBookId(bookId);
+    		loanId.setBranchId(branchId);
+    		loanId.setCardNo(cardNo);
     		
     		
-    		
-    		loanService.insert(loan);
+    		loanService.insert(loanId);
     		
     	} catch (EntityDoesNotExistException e) {
     		String entity = e.getEntity();
@@ -165,7 +140,7 @@ public class BorrowerController {
     					"loan exists"
     					);
     	}
-    	catch (SQLException e) {
+    	catch (Exception e) {
     		throw new RuntimeException(e);
     	}
     } 
@@ -181,14 +156,14 @@ public class BorrowerController {
     	
     	try {
     	
-    		BookLoans loan = new BookLoans(
-    				bookId, branchId, cardNo,
-    				null, 
-    				null
-    				);
+    		BookLoansId loanId = new BookLoansId();
+    		
+    		loanId.setBookId(bookId);
+    		loanId.setBranchId(branchId);
+    		loanId.setCardNo(cardNo);
     		
     		
-    		loanService.delete(loan);
+    		loanService.delete(loanId);
     		
     	} catch (EntityDoesNotExistException e) {
     		//The loan does not exist
@@ -198,7 +173,7 @@ public class BorrowerController {
 					"loan does not exist"
 					);
     	} 
-    	catch (SQLException e) {
+    	catch (Exception e) {
     		throw new RuntimeException(e);
     	}
     } 

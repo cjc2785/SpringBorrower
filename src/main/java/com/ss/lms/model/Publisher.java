@@ -1,23 +1,36 @@
 package com.ss.lms.model;
 
-public class Publisher {
-    private Integer publisherId;
-    private String publisherName;
-    private String publisherAddress;
-    private String publisherPhoneNumber;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="tbl_publisher", schema="library")
+public class Publisher {
+	
+	@Column
+    private Integer publisherId;
+	
+	@Column
+    private String publisherName;
+	
+	@Column
+    private String publisherAddress;
+	
+	@Column
+    private String publisherPhone;
+
+    public Publisher() {}
     
-    public Publisher() {};
+    public Publisher(Integer publisherId, String publisherName, String publisherAddress, String publisherPhone) {
+		this.publisherId = publisherId;
+		this.publisherName = publisherName;
+		this.publisherAddress = publisherAddress;
+		this.publisherPhone = publisherPhone;
+	}
     
-    public Publisher(Integer pubId, String pubName, String pubAddress, String pubPhone) {
-    	publisherId = pubId;
-    	publisherName = pubName;
-    	publisherAddress = pubAddress;
-    	publisherPhoneNumber = pubPhone;
-    }
-    
-    
-    public Integer getPublisherId() {
+
+	public Integer getPublisherId() {
         return publisherId;
     }
 
@@ -41,11 +54,11 @@ public class Publisher {
         this.publisherAddress = publisherAddress;
     }
 
-	public String getPublisherPhoneNumber() {
-		return publisherPhoneNumber;
+	public String getPublisherPhone() {
+		return publisherPhone;
 	}
 
-	public void setPublisherPhoneNumber(String publisherPhone) {
-		this.publisherPhoneNumber = publisherPhone;
+	public void setPublisherPhone(String publisherPhone) {
+		this.publisherPhone = publisherPhone;
 	}
 }
