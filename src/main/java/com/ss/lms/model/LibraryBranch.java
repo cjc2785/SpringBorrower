@@ -1,12 +1,26 @@
 package com.ss.lms.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="tbl_library_branch")
 public class LibraryBranch {
 	
+	@Id
+	@Column(name="branchId")
 	private int branchId;
+	
+	@Column(name="branchName")
 	private String branchName;
+	
+	@Column(name="branchAddress")
 	private String branchAddress;
 	
 	public LibraryBranch() {};
+	
 	public LibraryBranch(int Id, String name, String address) {
 		branchId = Id;
 		branchName = name;
@@ -32,5 +46,4 @@ public class LibraryBranch {
 	public void setBranchAddress(String branchAddress) {
 		this.branchAddress = branchAddress;
 	}
-
 }

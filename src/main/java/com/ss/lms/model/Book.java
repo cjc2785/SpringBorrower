@@ -1,49 +1,69 @@
 package com.ss.lms.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="tbl_book")
 public class Book {
-    protected Integer bookId;
-    protected String bookTitle;
-    private Author bookAuthor;
-    private Publisher bookPublisher;
-    
-    public Book() {};
-    public Book(Integer Id, String title, Author author, Publisher publisher) {
-    	bookId = Id;
-    	bookTitle = title;
-    	bookAuthor = author;
-    	bookPublisher = publisher;
-    	
-    }
+	
+	@Id
+	@Column
+	private int bookId;
+	
+	@Column
+	private String title;
+	
+	@OneToOne
+	@JoinColumn(name="authId", referencedColumnName="authorId")
+	private Author author;
+	
+	@OneToOne
+	@JoinColumn(name="pubId", referencedColumnName="publisherId")
+	private Publisher publisher;
+	
+	public Book() { }
+	
+	public Book(int bookId, String title, Author author, Publisher publisher) {
+		this.bookId = bookId;
+		this.title = title;
+		this.author = author;
+		this.publisher = publisher;
+	}
 
-    public Integer getBookId() {
-        return bookId;
-    }
+	public int getBookId() {
+		return bookId;
+	}
 
-    public void setBookId(Integer bookId) {
-        this.bookId = bookId;
-    }
+	public void setBookId(int bookId) {
+		this.bookId = bookId;
+	}
 
-    public String getBookTitle() {
-        return bookTitle;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setBookTitle(String bookTitle) {
-        this.bookTitle = bookTitle;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public Author getBookAuthor() {
-        return bookAuthor;
-    }
+	public Author getAuthor() {
+		return author;
+	}
 
-    public void setBookAuthor(Author bookAuthor) {
-        this.bookAuthor = bookAuthor;
-    }
+	public void setAuthor(Author author) {
+		this.author = author;
+	}
 
-    public Publisher getBookPublisher() {
-        return bookPublisher;
-    }
+	public Publisher getPublisher() {
+		return publisher;
+	}
 
-    public void setBookPublisher(Publisher bookPublisher) {
-        this.bookPublisher = bookPublisher;
-    }
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
 }

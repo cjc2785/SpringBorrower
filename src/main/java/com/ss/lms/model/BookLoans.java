@@ -1,44 +1,89 @@
 package com.ss.lms.model;
 
-import java.sql.Date;
+import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name="tbl_book_loans")
 public class BookLoans {
 	
-	private int bookId;
-	private int branchId;
-	private int cardNo;
+	@EmbeddedId
+	private BookLoansId id;
+	
+	@ManyToOne
+	@JoinColumn(name="bookId")
+	@MapsId("bookId")
+	private Book book;
+	
+	@ManyToOne
+	@JoinColumn(name="branchId")
+	@MapsId("branchId")
+	private LibraryBranch branch;
+	
+	@ManyToOne
+	@JoinColumn(name="cardNo")
+	@MapsId("cardNo")
+	private Borrower borrower;
+
+	
+	@Temporal(TemporalType.DATE)
+	@Column
 	private Date dateOut;
+	
+	@Temporal(TemporalType.DATE)
+	@Column
 	private Date dueDate;
 	
-	public BookLoans(){};
-	
-	public BookLoans(int book,int branch, int card, Date date,Date due){
-		bookId = book;
-		branchId = branch;
-		cardNo = card;
-		setDateOut(date);
-		setDueDate(due);
+	public BookLoans() { }
+
+	public BookLoans(BookLoansId id, Book book, LibraryBranch branch, Borrower borrower, Date dateOut, Date dueDate) {
+		this.id = id;
+		this.book = book;
+		this.branch = branch;
+		this.borrower = borrower;
+		this.dateOut = dateOut;
+		this.dueDate = dueDate;
 	}
-	
-	
-	
-	public int getBookId() {
-		return bookId;
+
+	public BookLoansId getId() {
+		return id;
 	}
-	public void setBookId(int bookId) {
-		this.bookId = bookId;
+
+	public void setId(BookLoansId id) {
+		this.id = id;
 	}
-	public int getBranchId() {
-		return branchId;
+
+	public Book getBook() {
+		return book;
 	}
-	public void setBranchId(int branchId) {
-		this.branchId = branchId;
+
+	public void setBook(Book book) {
+		this.book = book;
 	}
-	public int getCardNo() {
-		return cardNo;
+
+	public LibraryBranch getBranch() {
+		return branch;
 	}
-	public void setCardNo(int cardNo) {
-		this.cardNo = cardNo;
+
+	public void setBranch(LibraryBranch branch) {
+		this.branch = branch;
+	}
+
+	public Borrower getBorrower() {
+		return borrower;
+	}
+
+	public void setBorrower(Borrower borrower) {
+		this.borrower = borrower;
 	}
 
 	public Date getDateOut() {
@@ -56,8 +101,4 @@ public class BookLoans {
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
 	}
-
-
-
-
 }
