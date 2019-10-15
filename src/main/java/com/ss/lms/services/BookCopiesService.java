@@ -22,6 +22,10 @@ public class BookCopiesService {
 	@Autowired
 	private BookCopiesRepository copiesRepo;
 	
+	public Optional<BookCopies> get(BookCopiesId id) {
+		return copiesRepo.findById(id);
+	}
+	
 	
 	public List<BookCopies> getAvailableByBranch(int branchId) 
 			throws EntityDoesNotExistException {

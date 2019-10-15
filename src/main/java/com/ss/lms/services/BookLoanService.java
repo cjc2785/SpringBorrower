@@ -1,7 +1,6 @@
 package com.ss.lms.services;
 
 import java.sql.Date;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -68,17 +67,10 @@ public class BookLoanService {
 				branchId, cardNo);
 	}
 	
-	public Optional<BookLoans> get(Borrower borrower, LibraryBranch branch, Book book) 
-		throws SQLException {
-		
-		BookLoansId loanId = new BookLoansId();
-		
-		loanId.setBookId(book.getBookId());
-		loanId.setBranchId(branch.getBranchId());
-		loanId.setCardNo(borrower.getCardNo());
-		
-		return loanRepo.findById(loanId);
-	}
+	
+	public Optional<BookLoans> get(BookLoansId id) {			
+			return loanRepo.findById(id);
+		}
 	
 	public List<LibraryBranch> getBranchesByCardNo(int cardNo) 
 			throws EntityDoesNotExistException {
@@ -103,7 +95,7 @@ public class BookLoanService {
 	//  borrower, branch, or book does not exist
 	//Throws DuplicateIdException if the loan exists
 	public void insert(BookLoansId loanId) throws 
-		EntityDoesNotExistException, DuplicateIdException, SQLException {
+		EntityDoesNotExistException, DuplicateIdException {
 
 		BookLoans loan = generateLoan(loanId);
 		saveLoan(loan);
@@ -113,7 +105,7 @@ public class BookLoanService {
 	//Also increments the noOfCopies 
 	//Throws EntityDoesNotExistException if the loan exists
 	public void delete(BookLoansId loanId) 
-			throws EntityDoesNotExistException, SQLException {
+			throws EntityDoesNotExistException {
 		
 
 		Optional<BookLoans> existing = loanRepo.findById(loanId);
@@ -150,6 +142,13 @@ public class BookLoanService {
 		
 		//Validate the loan
 		
+		Optional<BookLoans> existing = loanRepo.findById(loanId);
+		
+		//Throw if the loan exists
+		if(existing.isPresent()) {
+			throw new DuplicateIdException();
+		}
+		
 		Optional<Borrower> optBorrower = borrowerRepo.findByCardNo(loanId.getCardNo());
 		
 		if(optBorrower.isEmpty()) {
@@ -177,13 +176,6 @@ public class BookLoanService {
 		}
 		
 		Book book = optBook.get();
-		
-		Optional<BookLoans> existing = loanRepo.findById(loanId);
-		
-		//Throw if the loan exists
-		if(existing.isPresent()) {
-			throw new DuplicateIdException();
-		}
 		
 		
 		

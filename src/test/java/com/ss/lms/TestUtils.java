@@ -1,4 +1,4 @@
-package com.ss.lms.dao;
+package com.ss.lms;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
