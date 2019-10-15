@@ -2,16 +2,14 @@ package com.ss.lms.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="tbl_author", schema="library")
+@Table(name="tbl_author")
 public class Author {
+	
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer authorId;
 
     @Column

@@ -5,8 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="tbl_book")
 public class Book {
 	
 	@Id
@@ -21,7 +23,7 @@ public class Book {
 	private Author author;
 	
 	@OneToOne
-	@JoinColumn(name="publisherId")
+	@JoinColumn(name="pubId", referencedColumnName="publisherId")
 	private Publisher publisher;
 	
 	public Book() { }

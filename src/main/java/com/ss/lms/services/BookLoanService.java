@@ -168,6 +168,7 @@ public class BookLoanService {
 		Optional<Book> optBook = copiesRepo.getAvailableCopies(loanId.getBranchId())
 				.stream()
 				.map(BookCopies::getBook)
+				.filter(book -> book.getBookId() == loanId.getBookId())
 				.findAny();
 				
 		

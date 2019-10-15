@@ -9,7 +9,7 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="tbl_book_copies", schema="library")
+@Table(name="tbl_book_copies")
 public class BookCopies {
 	
 	@EmbeddedId
@@ -22,7 +22,7 @@ public class BookCopies {
 	
 	
 	@ManyToOne
-	@JoinColumn(name="bookId")
+	@JoinColumn(name="branchId")
 	@MapsId("branchId")
 	private LibraryBranch branch;
 

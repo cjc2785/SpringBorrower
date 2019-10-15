@@ -1,13 +1,15 @@
 package com.ss.lms.model;
 
+import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="tbl_borrower", schema="library")
+@Table(name="tbl_borrower")
 public class Borrower {
 	
+	@Id
 	@Column
 	private int cardNo;
 	

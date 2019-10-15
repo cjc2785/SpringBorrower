@@ -1,6 +1,6 @@
 package com.ss.lms.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -13,7 +13,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name="tbl_book_loans", schema="library")
+@Table(name="tbl_book_loans")
 public class BookLoans {
 	
 	@EmbeddedId
@@ -30,9 +30,9 @@ public class BookLoans {
 	private LibraryBranch branch;
 	
 	@ManyToOne
-	@JoinColumn(name="bookId")
-	@MapsId("bookId")
-	private Borrower borroewer;
+	@JoinColumn(name="cardNo")
+	@MapsId("cardNo")
+	private Borrower borrower;
 
 	
 	@Temporal(TemporalType.DATE)
@@ -45,11 +45,11 @@ public class BookLoans {
 	
 	public BookLoans() { }
 
-	public BookLoans(BookLoansId id, Book book, LibraryBranch branch, Borrower borroewer, Date dateOut, Date dueDate) {
+	public BookLoans(BookLoansId id, Book book, LibraryBranch branch, Borrower borrower, Date dateOut, Date dueDate) {
 		this.id = id;
 		this.book = book;
 		this.branch = branch;
-		this.borroewer = borroewer;
+		this.borrower = borrower;
 		this.dateOut = dateOut;
 		this.dueDate = dueDate;
 	}
@@ -78,12 +78,12 @@ public class BookLoans {
 		this.branch = branch;
 	}
 
-	public Borrower getBorroewer() {
-		return borroewer;
+	public Borrower getBorrower() {
+		return borrower;
 	}
 
-	public void setBorroewer(Borrower borroewer) {
-		this.borroewer = borroewer;
+	public void setBorrower(Borrower borrower) {
+		this.borrower = borrower;
 	}
 
 	public Date getDateOut() {
