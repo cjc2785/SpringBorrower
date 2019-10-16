@@ -102,6 +102,7 @@ public class BookLoanService {
 		
 
 		//throw if the loan does not exist
+		
 		loanRepo.findById(loanId)
 			.orElseThrow(EntityDoesNotExistException::new);
 		
@@ -130,9 +131,11 @@ public class BookLoanService {
 			throws EntityDoesNotExistException {
 		
 		//Throw if the loan exists
-		loanRepo.findById(loanId)
-			.orElseThrow(EntityDoesNotExistException::new);
 		
+		if(loanRepo.existsById(loanId)) {
+			throw new EntityDoesNotExistException();
+		}
+	
 		
 		
 		//Throw if any entity does not exist

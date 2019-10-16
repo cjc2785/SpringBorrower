@@ -3,6 +3,7 @@ package com.ss.lms.dao;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public class BookCopiesTest {
 				.map(Book::getBookId)
 				.collect(Collectors.toList());
 	
-		List<Integer> expected = List.of(1, 3, 4);
+		List<Integer> expected = Arrays.asList(1, 3, 4);
 	
 	
 		assertTrue(actualIds.containsAll(expected));
