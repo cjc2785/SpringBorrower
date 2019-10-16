@@ -1,4 +1,4 @@
-package com.ss.lms.dao;
+package com.ss.lms.services;
 
 
 import static org.junit.Assert.assertTrue;
@@ -15,33 +15,35 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ss.lms.TestUtils;
+import com.ss.lms.exceptions.EntityDoesNotExistException;
 import com.ss.lms.model.*;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class BookCopiesTest {
+public class BookCopiesServiceTest {
 
 
 	@Autowired
 	TestUtils dbUtil;
 	
 	@Autowired
-	BookCopiesRepository copiesRepo;
+	BookCopiesService service;
+	
+
 
 	@Before
 	public void setUp() {
 		dbUtil.populateTestDb();
 	}
-
+	
 	@Test
-	public void getAvailableShouldReturnAllBooksWithAtLeast1CopyAtDcBranch() {
+	public void getAvailableShouldReturnAllBooksWithAtLeast1CopyAtDcBranch() throws EntityDoesNotExistException {
 		
-
 		int dcBranchId = 3;
 		
-		List<BookCopies> actual = copiesRepo.getAvailableCopies(dcBranchId);
+		List<BookCopies> actual = service.getAvailableByBranch(dcBranchId);
 		
 		
 		List<Integer> actualIds = actual.stream()
