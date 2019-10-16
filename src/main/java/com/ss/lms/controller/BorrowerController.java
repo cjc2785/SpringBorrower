@@ -7,6 +7,7 @@ import com.ss.lms.model.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class BorrowerController {
 	@GetMapping(
 			value="branches/{branchId}/books",
 			produces= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-	public List<Book> getBooks(@PathVariable("branchId") int branchId) throws EntityDoesNotExistException  {
+	public List<Book> getBooks(@Valid @PathVariable("branchId") int branchId) throws EntityDoesNotExistException  {
 
 
 		List<Book> books = copiesService.getAvailableByBranch(branchId)

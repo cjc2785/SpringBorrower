@@ -51,16 +51,10 @@ public class BookLoanService {
 	public List<BookLoans> getAllByBranchAndCardNo(int branchId, int cardNo) throws EntityDoesNotExistException {
 		
 		Optional<Borrower> optBorrower = borrowerRepo.findByCardNo(cardNo);
-		
-		if(optBorrower.isEmpty()) {
-			throw new EntityDoesNotExistException("borrower");
-		}
-		
-
 		Optional<LibraryBranch> optBranch = branchRepo.findById(branchId);
 		
-		if(optBranch.isEmpty()) {
-			throw new EntityDoesNotExistException("branch");
+		if(!optBorrower.isPresent() || !optBranch.isPresent()) {
+			throw new EntityDoesNotExistException();
 		}
 		
 		return loanRepo.findByIdBranchIdAndIdCardNo(
@@ -77,8 +71,8 @@ public class BookLoanService {
 		
 		Optional<Borrower> optBorrower = borrowerRepo.findByCardNo(cardNo);
 		
-		if(optBorrower.isEmpty()) {
-			throw new EntityDoesNotExistException("borrower");
+		if(!optBorrower.isPresent()) {
+			throw new EntityDoesNotExistException();
 		}
 		
 		return loanRepo.findByIdCardNo(cardNo)
@@ -110,8 +104,8 @@ public class BookLoanService {
 		Optional<BookLoans> existing = loanRepo.findById(loanId);
 		
 		//throw if the loan does not exist
-		if(existing.isEmpty()) {
-			throw new EntityDoesNotExistException("loan");
+		if(!existing.isPresent()) {
+			throw new EntityDoesNotExistException();
 		}
 		
 		
@@ -141,44 +135,31 @@ public class BookLoanService {
 		
 		//Validate the loan
 		
-		Optional<BookLoans> existing = loanRepo.findById(loanId);
-		
-		//Throw if the loan exists
-		if(existing.isPresent()) {
-			throw new EntityDoesNotExistException();
-		}
-		
+		Optional<BookLoans> existingLoan = loanRepo.findById(loanId);
 		Optional<Borrower> optBorrower = borrowerRepo.findByCardNo(loanId.getCardNo());
-		
-		if(optBorrower.isEmpty()) {
-			throw new EntityDoesNotExistException("borrower");
-		}
-		
-		Borrower borrower = optBorrower.get();
 		Optional<LibraryBranch> optBranch = branchRepo.findById(loanId.getBranchId());
-		
-		if(optBranch.isEmpty()) {
-			throw new EntityDoesNotExistException("branch");
-		}
-		
-		LibraryBranch branch = optBranch.get();
 		
 		Optional<Book> optBook = copiesRepo.getAvailableCopies(loanId.getBranchId())
 				.stream()
 				.map(BookCopies::getBook)
 				.filter(book -> book.getBookId() == loanId.getBookId())
 				.findAny();
-				
 		
-		if(optBook.isEmpty()) {
-			throw new EntityDoesNotExistException("book");
+		
+		boolean entitiesExist = optBorrower.isPresent() && 
+				optBranch.isPresent() && 
+				optBook.isPresent();
+		
+		//Throw if the loan exists or not all entities exist
+		if(existingLoan.isPresent() || !entitiesExist) {
+			throw new EntityDoesNotExistException();
 		}
 		
-		Book book = optBook.get();
-		
-		
-		
+
 		//Create the loan
+		Borrower borrower = optBorrower.get();
+		LibraryBranch branch = optBranch.get();
+		Book book = optBook.get();
 		
 		LocalDate outDate = LocalDate.now();
 		LocalDate dueDate = outDate.plusWeeks(1);
