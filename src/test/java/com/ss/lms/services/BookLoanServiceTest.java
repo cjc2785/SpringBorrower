@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,8 +66,8 @@ public class BookLoanServiceTest {
 		
 		int actualLoanCount = actual.size();
 		
-		List<Integer> expectedBooks = List.of(1, 2, 3);
-		List<Integer> expectedBranches = List.of(3, 3, 3);
+		List<Integer> expectedBooks = Arrays.asList(1,2,3);
+		List<Integer> expectedBranches = Arrays.asList(3);
 		
 		
 		assertEquals(3, actualLoanCount);
