@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ss.lms.TestUtils;
-import com.ss.lms.exceptions.DuplicateIdException;
 import com.ss.lms.exceptions.EntityDoesNotExistException;
 import com.ss.lms.model.*;
 
@@ -77,7 +76,7 @@ public class BookLoanServiceTest {
 	}
 
 	@Test
-	public void insertShouldAddALoan() throws EntityDoesNotExistException, DuplicateIdException {
+	public void insertShouldAddALoan() throws EntityDoesNotExistException {
 		
 		int danCardNo = 2;
 		int dcBranch = 3;
@@ -97,7 +96,7 @@ public class BookLoanServiceTest {
 	}
 	
 	@Test
-	public void insertShouldDecrementNoOfCopies() throws EntityDoesNotExistException, DuplicateIdException {
+	public void insertShouldDecrementNoOfCopies() throws EntityDoesNotExistException {
 		
 		int danCardNo = 2;
 		int dcBranch = 3;
@@ -125,7 +124,7 @@ public class BookLoanServiceTest {
 	}
 	
 	@Test
-	public void insertShouldThrowDuplicateIdIfLoanExists()  {
+	public void insertShouldThrowIfLoanExists()  {
 		
 		int danCardNo = 2;
 		int dcBranch = 3;
@@ -137,7 +136,7 @@ public class BookLoanServiceTest {
 				danCardNo);
 
 		
-		assertThrows(DuplicateIdException.class, () -> {
+		assertThrows(EntityDoesNotExistException.class, () -> {
 			service.insert(loanId);
 		});
 	}

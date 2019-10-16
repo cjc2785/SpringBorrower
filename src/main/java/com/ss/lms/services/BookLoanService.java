@@ -94,8 +94,7 @@ public class BookLoanService {
 	//Throws EntityDoesNotExistException if the 
 	//  borrower, branch, or book does not exist
 	//Throws DuplicateIdException if the loan exists
-	public void insert(BookLoansId loanId) throws 
-		EntityDoesNotExistException, DuplicateIdException {
+	public void insert(BookLoansId loanId) throws EntityDoesNotExistException {
 
 		BookLoans loan = generateLoan(loanId);
 		saveLoan(loan);
@@ -138,7 +137,7 @@ public class BookLoanService {
 	//Does not perform any updates
 	//Generates an outDate and dueDate
 	private BookLoans generateLoan(BookLoansId loanId) 
-			throws EntityDoesNotExistException, DuplicateIdException{
+			throws EntityDoesNotExistException {
 		
 		//Validate the loan
 		
@@ -146,7 +145,7 @@ public class BookLoanService {
 		
 		//Throw if the loan exists
 		if(existing.isPresent()) {
-			throw new DuplicateIdException();
+			throw new EntityDoesNotExistException();
 		}
 		
 		Optional<Borrower> optBorrower = borrowerRepo.findByCardNo(loanId.getCardNo());
