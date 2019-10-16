@@ -30,12 +30,8 @@ public class BookCopiesService {
 	public List<BookCopies> getAvailableByBranch(int branchId) 
 			throws EntityDoesNotExistException {
 		
-		Optional<LibraryBranch> optBranch = branchRepo.findById(branchId);
-		
-		if(optBranch.isEmpty()) {
-			
-			throw new EntityDoesNotExistException("branch");
-		}
+		branchRepo.findById(branchId)
+			.orElseThrow(EntityDoesNotExistException::new);
 
 		List<BookCopies> copiesList = copiesRepo.getAvailableCopies(branchId);
 		

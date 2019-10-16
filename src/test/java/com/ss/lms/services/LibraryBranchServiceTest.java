@@ -1,7 +1,8 @@
-package com.ss.lms.dao;
+package com.ss.lms.services;
 
 
 import static org.junit.Assert.assertTrue;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,37 +22,37 @@ import com.ss.lms.model.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class BookCopiesTest {
+public class LibraryBranchServiceTest {
 
 
 	@Autowired
 	TestUtils dbUtil;
 	
 	@Autowired
-	BookCopiesRepository copiesRepo;
+	LibraryBranchService service;
+	
+
 
 	@Before
 	public void setUp() {
 		dbUtil.populateTestDb();
 	}
-
+	
 	@Test
-	public void getAvailableShouldReturnAllBooksWithAtLeast1CopyAtDcBranch() {
+	public void getAllShouldReturnDcBranch() {
 		
-
-		int dcBranchId = 3;
-		
-		List<BookCopies> actual = copiesRepo.getAvailableCopies(dcBranchId);
+		int dcBranch = 3;
 		
 		
-		List<Integer> actualIds = actual.stream()
-				.map(BookCopies::getBook)
-				.map(Book::getBookId)
+		
+		List<LibraryBranch> actualBranches = service.findAll();
+		
+		
+		
+		List<Integer> actualIds = actualBranches.stream()
+				.map(LibraryBranch::getBranchId)
 				.collect(Collectors.toList());
-	
-		List<Integer> expected = List.of(1, 3, 4);
-	
-	
-		assertTrue(actualIds.containsAll(expected));
+		
+		assertTrue(actualIds.contains(dcBranch));
 	}
 }

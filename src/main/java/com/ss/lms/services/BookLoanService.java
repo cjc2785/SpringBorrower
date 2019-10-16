@@ -21,7 +21,7 @@ import com.ss.lms.model.*;
 public class BookLoanService {
 	
 	//Utility function that can be passed to a filter
-	static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+	private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
         Map<Object,Boolean> visited = new HashMap<>();
         return t -> visited.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
 	} 
@@ -50,18 +50,15 @@ public class BookLoanService {
 
 	public List<BookLoans> getAllByBranchAndCardNo(int branchId, int cardNo) throws EntityDoesNotExistException {
 		
-		Optional<Borrower> optBorrower = borrowerRepo.findByCardNo(cardNo);
+		//Throw if any entity does not exist
 		
-		if(optBorrower.isEmpty()) {
-			throw new EntityDoesNotExistException("borrower");
-		}
+		borrowerRepo.findByCardNo(cardNo)
+			.orElseThrow(EntityDoesNotExistException::new);
+		
+		branchRepo.findById(branchId)
+				.orElseThrow(EntityDoesNotExistException::new);
 		
 
-		Optional<LibraryBranch> optBranch = branchRepo.findById(branchId);
-		
-		if(optBranch.isEmpty()) {
-			throw new EntityDoesNotExistException("branch");
-		}
 		
 		return loanRepo.findByIdBranchIdAndIdCardNo(
 				branchId, cardNo);
@@ -75,11 +72,8 @@ public class BookLoanService {
 	public List<LibraryBranch> getBranchesByCardNo(int cardNo) 
 			throws EntityDoesNotExistException {
 		
-		Optional<Borrower> optBorrower = borrowerRepo.findByCardNo(cardNo);
-		
-		if(optBorrower.isEmpty()) {
-			throw new EntityDoesNotExistException("borrower");
-		}
+		borrowerRepo.findByCardNo(cardNo)
+				.orElseThrow(EntityDoesNotExistException::new);
 		
 		return loanRepo.findByIdCardNo(cardNo)
 				.stream()
@@ -107,13 +101,9 @@ public class BookLoanService {
 			throws EntityDoesNotExistException {
 		
 
-		Optional<BookLoans> existing = loanRepo.findById(loanId);
-		
 		//throw if the loan does not exist
-		if(existing.isEmpty()) {
-			throw new EntityDoesNotExistException("loan");
-		}
-		
+		loanRepo.findById(loanId)
+			.orElseThrow(EntityDoesNotExistException::new);
 		
 		
 		BookCopiesId copiesId = new BookCopiesId();
@@ -139,45 +129,29 @@ public class BookLoanService {
 	private BookLoans generateLoan(BookLoansId loanId) 
 			throws EntityDoesNotExistException {
 		
-		//Validate the loan
-		
-		Optional<BookLoans> existing = loanRepo.findById(loanId);
-		
 		//Throw if the loan exists
-		if(existing.isPresent()) {
-			throw new EntityDoesNotExistException();
-		}
+		loanRepo.findById(loanId)
+			.orElseThrow(EntityDoesNotExistException::new);
 		
-		Optional<Borrower> optBorrower = borrowerRepo.findByCardNo(loanId.getCardNo());
 		
-		if(optBorrower.isEmpty()) {
-			throw new EntityDoesNotExistException("borrower");
-		}
 		
-		Borrower borrower = optBorrower.get();
-		Optional<LibraryBranch> optBranch = branchRepo.findById(loanId.getBranchId());
+		//Throw if any entity does not exist
 		
-		if(optBranch.isEmpty()) {
-			throw new EntityDoesNotExistException("branch");
-		}
+		Borrower borrower = borrowerRepo.findByCardNo(loanId.getCardNo())
+				.orElseThrow(EntityDoesNotExistException::new);
 		
-		LibraryBranch branch = optBranch.get();
+		LibraryBranch branch = branchRepo.findById(loanId.getBranchId())
+				.orElseThrow(EntityDoesNotExistException::new);
 		
-		Optional<Book> optBook = copiesRepo.getAvailableCopies(loanId.getBranchId())
+		Book book = copiesRepo.getAvailableCopies(loanId.getBranchId())
 				.stream()
 				.map(BookCopies::getBook)
-				.filter(book -> book.getBookId() == loanId.getBookId())
-				.findAny();
-				
-		
-		if(optBook.isEmpty()) {
-			throw new EntityDoesNotExistException("book");
-		}
-		
-		Book book = optBook.get();
+				.filter(aBook -> aBook.getBookId() == loanId.getBookId())
+				.findAny()
+				.orElseThrow(EntityDoesNotExistException::new);
 		
 		
-		
+
 		//Create the loan
 		
 		LocalDate outDate = LocalDate.now();
