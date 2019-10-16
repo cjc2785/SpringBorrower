@@ -1,6 +1,5 @@
 package com.ss.lms.services;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ public class LibraryBranchService {
 	private LibraryBranchRepository branchRepo;
 	
 	
-	public List<LibraryBranch> findAll() throws SQLException {
+	public List<LibraryBranch> findAll()  {
 		return branchRepo.findAll();
 	}
 }

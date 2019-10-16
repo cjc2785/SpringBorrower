@@ -12,6 +12,10 @@ public class EntityDoesNotExistException extends Exception {
 	
 	public static final long serialVersionUID = 1L;
 	
+	public EntityDoesNotExistException() {
+		this.entity = "";
+	}
+	
 	public EntityDoesNotExistException(String entity) {
 		this.entity = entity;
 	}
