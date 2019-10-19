@@ -91,7 +91,7 @@ public class BookLoanServiceTest {
 		
 		service.insert(loanId);
 		
-		boolean actual = !service.get(loanId).isEmpty();
+		boolean actual = service.get(loanId).isPresent();
 		
 		assertTrue(actual);
 	}
@@ -161,7 +161,7 @@ public class BookLoanServiceTest {
 		
 		
 		
-		boolean actual = service.get(loanId).isEmpty();
+		boolean actual = !service.get(loanId).isPresent();
 		
 		assertTrue(actual);
 	}
