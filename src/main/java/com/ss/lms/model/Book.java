@@ -19,11 +19,11 @@ public class Book {
 	private String title;
 	
 	@OneToOne
-	@JoinColumn(name="authId", referencedColumnName="authorId")
+	@JoinColumn(name="authorId", referencedColumnName="authorId")
 	private Author author;
 	
 	@OneToOne
-	@JoinColumn(name="pubId", referencedColumnName="publisherId")
+	@JoinColumn(name="publisherId", referencedColumnName="publisherId")
 	private Publisher publisher;
 	
 	public Book() { }
