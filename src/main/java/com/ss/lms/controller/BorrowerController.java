@@ -41,6 +41,12 @@ public class BorrowerController {
 	public String handle(Exception e) {
 	    return "invalid request";
 	}
+	
+	@GetMapping("health")
+	public HttpStatus getHealth() {
+		return HttpStatus.OK;
+	}
+	
 
 	//Get all branches
 	@GetMapping(
