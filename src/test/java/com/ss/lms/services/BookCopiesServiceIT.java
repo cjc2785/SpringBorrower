@@ -1,48 +1,48 @@
-package com.ss.lms.dao;
-
-
-import static org.junit.Assert.assertTrue;
+package com.ss.lms.services;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ss.lms.TestUtils;
+import com.ss.lms.exceptions.EntityDoesNotExistException;
 import com.ss.lms.model.*;
 
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class BookCopiesTest {
+public class BookCopiesServiceIT {
 
 
 	@Autowired
 	TestUtils dbUtil;
 	
 	@Autowired
-	BookCopiesRepository copiesRepo;
+	BookCopiesService service;
+	
 
-	@Before
+
+	@BeforeEach
 	public void setUp() {
 		dbUtil.populateTestDb();
 	}
-
+	
 	@Test
-	public void getAvailableShouldReturnAllBooksWithAtLeast1CopyAtDcBranch() {
+	public void getAvailableShouldReturnAllBooksWithAtLeast1CopyAtDcBranch() throws EntityDoesNotExistException {
 		
-
 		int dcBranchId = 3;
 		
-		List<BookCopies> actual = copiesRepo.getAvailableCopies(dcBranchId);
+		List<BookCopies> actual = service.getAvailableByBranch(dcBranchId);
 		
 		
 		List<Integer> actualIds = actual.stream()

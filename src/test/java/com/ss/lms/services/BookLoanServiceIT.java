@@ -1,20 +1,21 @@
 package com.ss.lms.services;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ss.lms.TestUtils;
@@ -22,10 +23,10 @@ import com.ss.lms.exceptions.EntityDoesNotExistException;
 import com.ss.lms.model.*;
 
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class BookLoanServiceTest {
+public class BookLoanServiceIT {
 
 
 	@Autowired
@@ -37,7 +38,7 @@ public class BookLoanServiceTest {
 	@Autowired
 	BookCopiesService copiesService;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		dbUtil.populateTestDb();
 	}
