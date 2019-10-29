@@ -13,7 +13,6 @@ ENV LMS_DB_PASSWORD='lmspassword'
 
 COPY . .
 
-EXPOSE 3306
 EXPOSE 8083
 
 RUN mvn clean package 
